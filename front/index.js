@@ -40,7 +40,21 @@ window.addEventListener('load', async function () {
         }
     };
 
+    let totalLength = await fetch('/listTotal');
+    // totalLength = (await totalLength.json() )["totalLength"].toString()
+    // _totalLength = totalLength
+
+
+    // console.log ( totalLength)
+    let totalP = document.querySelector("#totalP")
+    totalP.innerText = "Current updated players are " + (await totalLength.json() )["totalLength"].toString()
+
+
+
+    
     let mlbdata;
+
+
     let input_ = document.querySelector('.enterButton');
     input_.addEventListener('click', async function () {
         if (false && mlbdata === undefined) {
@@ -52,7 +66,7 @@ window.addEventListener('load', async function () {
         /*
             connect with server
         */
-        let res = await fetch('http://13.52.181.55:3000/name2id?name='+encodeURIComponent(inputSelector.value));
+        let res = await fetch('/name2id?name='+encodeURIComponent(inputSelector.value));
         res = await res.json()
         
         // JSON.parse(await res.text())
@@ -76,55 +90,109 @@ window.addEventListener('load', async function () {
             aa = await aa.json()
 
             let info = aa["people"][0]
+            
+            let distinction = document.querySelector("#type");
+
             if (info["stats"][0]["group"]["displayName"] === "hitting") {
-                console.log(info["fullName"] + "is a hitter")
+                distinction.innerText=info["fullName"] + "is a hitter"
+                let yearByyear = aa["people"][0]["stats"][0]["splits"]
+                //console.log ( yearByyear)
+    
+                let table_ = document.createElement("table");
+                table_.setAttribute("class", "playerTableCSS")
+                table_.setAttribute("id", "playerTable");
+                document.querySelector("#info").appendChild(table_)
+                console.log("year\tavg\t\tHR\t")
+                let tr1 = document.createElement("tr");
+                table_.appendChild(tr1);
+                let th1_1 = document.createElement("th");
+                tr1.appendChild(th1_1);
+    
+                let th1_2 = document.createElement("th");
+                tr1.appendChild(th1_2);
+    
+                let th1_3 = document.createElement("th");
+                tr1.appendChild(th1_3);
+    
+                th1_1.innerText = "year";
+                th1_2.innerText = "avg";
+                th1_3.innerText = "HR";
+    
+                for (let i = 0; i < yearByyear.length; i++) {
+                    let tr2 = document.createElement("tr");
+                    table_.appendChild(tr2);
+    
+                    let th2_1 = document.createElement("td");
+                    tr2.appendChild(th2_1);
+    
+                    let th2_2 = document.createElement("td");
+                    tr2.appendChild(th2_2);
+    
+                    let th2_3 = document.createElement("td");
+                    tr2.appendChild(th2_3);
+    
+    
+                    th2_1.innerText = yearByyear[i]["season"];
+                    th2_2.innerText = yearByyear[i]["stat"]["avg"];
+                    th2_3.innerText = yearByyear[i]["stat"]["homeRuns"];
+                }
             }
 
-            let yearByyear = aa["people"][0]["stats"][0]["splits"]
-            //console.log ( yearByyear)
+            if (info["stats"][0]["group"]["displayName"] === "pitching") {
+                distinction.innerText=info["fullName"] + "is a pitching"    
+                
+                let yearByyear = aa["people"][0]["stats"][0]["splits"]
+                //console.log ( yearByyear)
+    
+                let table_ = document.createElement("table");
+                table_.setAttribute("class", "playerTableCSS")
+                table_.setAttribute("id", "playerTable");
+                document.querySelector("#info").appendChild(table_)
+                console.log("year\tavg\t\tHR\t")
+                let tr1 = document.createElement("tr");
+                table_.appendChild(tr1);
+                let th1_1 = document.createElement("th");
+                tr1.appendChild(th1_1);
+    
+                let th1_2 = document.createElement("th");
+                tr1.appendChild(th1_2);
+    
+                let th1_3 = document.createElement("th");
+                tr1.appendChild(th1_3);
 
-            let table_ = document.createElement("table");
-            table_.setAttribute("class", "playerTableCSS")
-            table_.setAttribute("id", "playerTable");
-            document.querySelector("#info").appendChild(table_)
-            console.log("year\tavg\t\tHR\t")
-            let tr1 = document.createElement("tr");
-            table_.appendChild(tr1);
-            let th1_1 = document.createElement("th");
-            tr1.appendChild(th1_1);
+                let th1_4 = document.createElement("th");
+                tr1.appendChild(th1_4);
+    
+                th1_1.innerText = "year";
+                th1_2.innerText = "win";
+                th1_3.innerText = "losses";
+                th1_4.innerHTML = "ERA";
+    
+                for (let i = 0; i < yearByyear.length; i++) {
+                    let tr2 = document.createElement("tr");
+                    table_.appendChild(tr2);
+    
+                    let th2_1 = document.createElement("td");
+                    tr2.appendChild(th2_1);
+    
+                    let th2_2 = document.createElement("td");
+                    tr2.appendChild(th2_2);
+    
+                    let th2_3 = document.createElement("td");
+                    tr2.appendChild(th2_3);
 
-            let th1_2 = document.createElement("th");
-            tr1.appendChild(th1_2);
-
-            let th1_3 = document.createElement("th");
-            tr1.appendChild(th1_3);
-
-            th1_1.innerText = "year";
-            th1_2.innerText = "avg";
-            th1_3.innerText = "HR";
-
-
-
-
-
-            for (let i = 0; i < yearByyear.length; i++) {
-                let tr2 = document.createElement("tr");
-                table_.appendChild(tr2);
-
-                let th2_1 = document.createElement("td");
-                tr2.appendChild(th2_1);
-
-                let th2_2 = document.createElement("td");
-                tr2.appendChild(th2_2);
-
-                let th2_3 = document.createElement("td");
-                tr2.appendChild(th2_3);
-
-
-                th2_1.innerText = yearByyear[i]["season"];
-                th2_2.innerText = yearByyear[i]["stat"]["avg"];
-                th2_3.innerText = yearByyear[i]["stat"]["homeRuns"];
+                    let th2_4 = document.createElement("td");
+                    tr2.appendChild(th2_4);
+    
+    
+                    th2_1.innerText = yearByyear[i]["season"];
+                    th2_2.innerText = yearByyear[i]["stat"]["wins"];
+                    th2_3.innerText = yearByyear[i]["stat"]["losses"];
+                    th2_4.innerText = yearByyear[i]["stat"]["era"];
+                }
             }
+
+
 
         }
         else {
